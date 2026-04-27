@@ -1,0 +1,5 @@
+#masscan
+open tcp 5000 37.119.209.207 1776779898
+open tcp 22 37.119.209.207 1776779898
+banner tcp 22 37.119.209.207 1776779905 ssh SSH-2.0-OpenSSH_10.0p2 Debian-7
+# end

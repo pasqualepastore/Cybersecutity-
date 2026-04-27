@@ -1,0 +1,26 @@
+nmap -sV 37.119.209.207
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-04-21 08:09 -0500
+Nmap scan report for net-37-119-209-207.cust.vodafonedsl.it (37.119.209.207)
+Host is up (0.36s latency).
+Not shown: 918 filtered tcp ports (no-response), 62 filtered tcp ports (admin-prohibited)
+PORT      STATE  SERVICE       VERSION
+22/tcp    open   ssh           OpenSSH 10.0p2 Debian 7 (protocol 2.0)
+90/tcp    closed dnsix
+1077/tcp  closed imgames
+1149/tcp  closed bvtsonar
+1494/tcp  closed citrix-ica
+2038/tcp  closed objectmanager
+2323/tcp  open   3d-nfsd?
+2604/tcp  closed ospfd
+4444/tcp  closed krb524
+5000/tcp  open   http          nginx 1.27.4
+5060/tcp  closed sip
+5862/tcp  closed unknown
+5999/tcp  closed ncd-conf
+7435/tcp  closed unknown
+8192/tcp  closed sophos
+8383/tcp  closed m2mservices
+8443/tcp  closed https-alt
+9877/tcp  closed x510
+9968/tcp  closed unknown
+50000/tcp closed ibm-db2
