@@ -1,0 +1,4 @@
+make clean
+make
+insmod reboot_blocker.ko
+
